@@ -1,0 +1,497 @@
+SQL> /*
+SQL> CIS 353 - Database Design Project
+SQL> Bridget Bieniek
+SQL> Joel Vander Klipp
+SQL> Adam Slifco
+SQL> Marcellus Chesebro
+SQL> */
+SQL> /* The SQL/DDL code that creates your schema
+SQL> In the DDL, every IC must have a unique name; e.g. IC5, IC10, IC15, etc.*/
+SQL> DROP TABLE Theater CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Movie CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Ticket CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Employee CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE ParkingSpace CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Revenue CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Showtime CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Sells CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE ShownIn CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> 
+SQL> CREATE TABLE Theater(
+  2  theaterID INTEGER PRIMARY KEY,
+  3  seatingSize INTEGER);
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE Movie(
+  2  mID INTEGER PRIMARY KEY,
+  3  rating VARCHAR(10),
+  4  title VARCHAR(25),
+  5  description VARCHAR(140));
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE Ticket(
+  2  tID INTEGER PRIMARY KEY,
+  3  mID INTEGER,
+  4  cost INTEGER,
+  5  cAge INTEGER,
+  6  cName VARCHAR(20),
+  7  CONSTRAINT ATT1 CHECK (cost > 5),
+  8  CONSTRAINT KEY1 FOREIGN KEY (mID) REFERENCES Movie(mID)
+  9  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE Employee(
+  2  eID INTEGER PRIMARY KEY,
+  3  hours INTEGER,
+  4  name VARCHAR(20),
+  5  phoneNum INTEGER,
+  6  fullTimeStatus INTEGER,
+  7  super_eID INTEGER,
+  8  CONSTRAINT ATT3 CHECK ((fullTimeStatus = 1 AND hours > 25) OR (fullTimeStatus = 0 AND hours < 25)),
+  9  CONSTRAINT KEY3 FOREIGN KEY (super_eID) REFERENCES Employee(eID));
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE ParkingSpace(
+  2  parkID INTEGER PRIMARY KEY,
+  3  handicap INTEGER,
+  4  eID INTEGER,
+  5  CONSTRAINT KEY9 FOREIGN KEY (eID) REFERENCES Employee(eID));
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE Revenue(
+  2  amount INTEGER,
+  3  mID INTEGER,
+  4  mdate DATE,
+  5  PRIMARY KEY(mID, mdate),
+  6  CONSTRAINT KEY7 FOREIGN KEY (mID) REFERENCES Movie(mID));
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE Showtime(
+  2  mID INTEGER,
+  3  showTime VARCHAR(7),
+  4  PRIMARY KEY(mID, showTime),
+  5  CONSTRAINT KEY6 FOREIGN KEY (mID) REFERENCES Movie(mID));
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE Sells(
+  2  eID INTEGER,
+  3  tID INTEGER,
+  4  PRIMARY KEY(eID, tID),
+  5  CONSTRAINT KEY4 FOREIGN KEY (tID) REFERENCES Ticket(tID),
+  6  CONSTRAINT KEY5 FOREIGN KEY (eID) REFERENCES Employee(eID));
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE ShownIn(
+  2  type VARCHAR(10),
+  3  mID INTEGER,
+  4  theaterID INTEGER,
+  5  PRIMARY KEY(mID, theaterID),
+  6  CONSTRAINT KEY8 FOREIGN KEY (mID) REFERENCES Movie(mID),
+  7  CONSTRAINT KEY2 FOREIGN KEY (theaterID) REFERENCES Theater(theaterID));
+
+Table created.
+
+SQL> 
+SQL> SHOW ERROR
+No errors.
+SQL> 
+SQL> SET FEEDBACK OFF
+SQL> 
+SQL> INSERT INTO Movie VALUES (1, 'PG', 'Alice In Wonderland', 'Alice takes some acid and goes on a trip');
+SQL> INSERT INTO Movie VALUES (2, 'R18', 'The Great Wolf', 'A wolf is suffering in the tundra and struggling to survive');
+SQL> 
+SQL> INSERT INTO Theater VALUES (10, 5);
+SQL> 
+SQL> INSERT INTO Ticket VALUES (101, 1, 15, 12, 'Rebecca');
+SQL> INSERT INTO Ticket VALUES (102, 2, 20, 21, 'Jill');
+SQL> INSERT INTO Ticket VALUES (103, 1, 15, 13, 'John');
+SQL> INSERT INTO Ticket VALUES (104, 1, 15, 20, 'Sam');
+SQL> INSERT INTO Ticket VALUES (105, 2, 20, 31, 'Rick');
+SQL> INSERT INTO Ticket VALUES (106, 2, 20, 44, 'Morty');
+SQL> 
+SQL> 
+SQL> INSERT INTO Employee VALUES(1001, 40, 'Mark Hamill', 1233211, 1, NULL);
+SQL> INSERT INTO Employee VALUES(1002, 18, 'Luke Skywalker', 3211233, 0, 1001);
+SQL> INSERT INTO Employee VALUES(1003, 17, 'John Jingle', 2421244, 0, 1001);
+SQL> 
+SQL> INSERT INTO ParkingSpace VALUES (250, 1, 1001);
+SQL> 
+SQL> INSERT INTO Revenue VALUES (1500, 2, TO_DATE('01/10/16', 'MM/DD/YYYY'));
+SQL> INSERT INTO Revenue VALUES (1250, 2, TO_DATE('02/10/16', 'MM/DD/YYYY'));
+SQL> INSERT INTO Revenue VALUES (1475, 1, TO_DATE('02/10/16', 'MM/DD/YYYY'));
+SQL> INSERT INTO Revenue VALUES (1200, 1, TO_DATE('01/10/16', 'MM/DD/YYYY'));
+SQL> 
+SQL> INSERT INTO Showtime VALUES (1, '07:00PM');
+SQL> INSERT INTO Showtime VALUES (1, '10:00PM');
+SQL> INSERT INTO Showtime VALUES (2, '06:00PM');
+SQL> INSERT INTO Showtime VALUES (2, '11:00AM');
+SQL> 
+SQL> INSERT INTO Sells VALUES (1001, 101);
+SQL> INSERT INTO Sells VALUES (1002, 102);
+SQL> INSERT INTO Sells VALUES (1002, 103);
+SQL> INSERT INTO Sells VALUES (1003, 104);
+SQL> INSERT INTO Sells VALUES (1003, 105);
+SQL> INSERT INTO Sells VALUES (1003, 106);
+SQL> 
+SQL> INSERT INTO ShownIn VALUES ('regular',2, 10);
+SQL> 
+SQL> SET FEEDBACK ON
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> SELECT * FROM Movie;
+
+       MID RATING     TITLE                                                     
+---------- ---------- -------------------------                                 
+DESCRIPTION                                                                     
+--------------------------------------------------------------------------------
+         1 PG         Alice In Wonderland                                       
+Alice takes some acid and goes on a trip                                        
+                                                                                
+         2 R18        The Great Wolf                                            
+A wolf is suffering in the tundra and struggling to survive                     
+                                                                                
+
+2 rows selected.
+
+SQL> SELECT * FROM Ticket;
+
+       TID        MID       COST       CAGE CNAME                               
+---------- ---------- ---------- ---------- --------------------                
+       101          1         15         12 Rebecca                             
+       102          2         20         21 Jill                                
+       103          1         15         13 John                                
+       104          1         15         20 Sam                                 
+       105          2         20         31 Rick                                
+       106          2         20         44 Morty                               
+
+6 rows selected.
+
+SQL> SELECT * FROM Employee;
+
+       EID      HOURS NAME                   PHONENUM FULLTIMESTATUS  SUPER_EID 
+---------- ---------- -------------------- ---------- -------------- ---------- 
+      1001         40 Mark Hamill             1233211              1            
+      1002         18 Luke Skywalker          3211233              0       1001 
+      1003         17 John Jingle             2421244              0       1001 
+
+3 rows selected.
+
+SQL> SELECT * FROM Revenue;
+
+    AMOUNT        MID MDATE                                                     
+---------- ---------- ---------                                                 
+      1500          2 10-JAN-16                                                 
+      1250          2 10-FEB-16                                                 
+      1475          1 10-FEB-16                                                 
+      1200          1 10-JAN-16                                                 
+
+4 rows selected.
+
+SQL> SELECT * FROM Theater;
+
+ THEATERID SEATINGSIZE                                                          
+---------- -----------                                                          
+        10           5                                                          
+
+1 row selected.
+
+SQL> SELECT * FROM ParkingSpace;
+
+    PARKID   HANDICAP        EID                                                
+---------- ---------- ----------                                                
+       250          1       1001                                                
+
+1 row selected.
+
+SQL> SELECT * FROM Showtime;
+
+       MID SHOWTIM                                                              
+---------- -------                                                              
+         1 07:00PM                                                              
+         1 10:00PM                                                              
+         2 06:00PM                                                              
+         2 11:00AM                                                              
+
+4 rows selected.
+
+SQL> SELECT * FROM Sells;
+
+       EID        TID                                                           
+---------- ----------                                                           
+      1001        101                                                           
+      1002        102                                                           
+      1002        103                                                           
+      1003        104                                                           
+      1003        105                                                           
+      1003        106                                                           
+
+6 rows selected.
+
+SQL> SELECT * FROM ShownIn;
+
+TYPE              MID  THEATERID                                                
+---------- ---------- ----------                                                
+regular             2         10                                                
+
+1 row selected.
+
+SQL> 
+SQL> --Q1: TOP-N
+SQL> --Finds the two employees that have worked the most hours
+SQL> SELECT eID, name, hours
+  2  FROM   (SELECT eID, name, hours
+  3  	     FROM   Employee
+  4  	     ORDER BY hours DESC)
+  5  WHERE ROWNUM <= 2;
+
+       EID NAME                      HOURS                                      
+---------- -------------------- ----------                                      
+      1001 Mark Hamill                  40                                      
+      1002 Luke Skywalker               18                                      
+
+2 rows selected.
+
+SQL> 
+SQL> --Q2: GROUP BY
+SQL> --finds the total cost of all tickets sold for each movie that has made
+SQL> --more than $50, and orders it by the sum of the cost.
+SQL> SELECT T.mID, SUM(T.cost)
+  2  FROM Ticket T
+  3  GROUP BY T.mID
+  4  HAVING SUM(T.cost) > 50
+  5  ORDER BY SUM(T.cost);
+
+       MID SUM(T.COST)                                                          
+---------- -----------                                                          
+         2          60                                                          
+
+1 row selected.
+
+SQL> 
+SQL> --Q3: Self-join
+SQL> --Finds employee and their supervisor
+SQL> SELECT DISTINCT E1.eID, E1.name, E2.eID, E2.name
+  2  FROM Employee E1, Employee E2 WHERE E1.super_eID = E2.eID;
+
+       EID NAME                        EID NAME                                 
+---------- -------------------- ---------- --------------------                 
+      1002 Luke Skywalker             1001 Mark Hamill                          
+      1003 John Jingle                1001 Mark Hamill                          
+
+2 rows selected.
+
+SQL> 
+SQL> --Q4: Non-correlated subquery
+SQL> --Finds full time employees with parking spaces
+SQL> SELECT eID, name FROM Employee WHERE fullTimeStatus = 1 AND eID
+  2  IN (SELECT P.eID FROM ParkingSpace P);
+
+       EID NAME                                                                 
+---------- --------------------                                                 
+      1001 Mark Hamill                                                          
+
+1 row selected.
+
+SQL> 
+SQL> --Q5: Rank query
+SQL> --ranks the movies on how much they made on a particular date
+SQL> SELECT mID, amount, mdate, RANK() OVER (PARTITION BY mdate ORDER BY amount DESC) "Daily Rank"
+  2  FROM Revenue;
+
+       MID     AMOUNT MDATE     Daily Rank                                      
+---------- ---------- --------- ----------                                      
+         2       1500 10-JAN-16          1                                      
+         1       1200 10-JAN-16          2                                      
+         1       1475 10-FEB-16          1                                      
+         2       1250 10-FEB-16          2                                      
+
+4 rows selected.
+
+SQL> 
+SQL> --Q6: Joining 4 Tables
+SQL> --Finds the employees who have sold a ticket to an R-rated Movie
+SQL> SELECT E.name, E.eID, T.tID, M.rating, M.title
+  2  FROM Employee E, Sells S, Ticket T, Movie M
+  3  WHERE E.eID = S.eID AND S.tID = T.tID And M.rating LIKE '%R18%'
+  4  ORDER BY E.name;
+
+NAME                        EID        TID RATING     TITLE                     
+-------------------- ---------- ---------- ---------- ------------------------- 
+John Jingle                1003        104 R18        The Great Wolf            
+John Jingle                1003        105 R18        The Great Wolf            
+John Jingle                1003        106 R18        The Great Wolf            
+Luke Skywalker             1002        102 R18        The Great Wolf            
+Luke Skywalker             1002        103 R18        The Great Wolf            
+Mark Hamill                1001        101 R18        The Great Wolf            
+
+6 rows selected.
+
+SQL> 
+SQL> --Q7: Minus query
+SQL> --Finds all the employees that have a parking space
+SQL> SELECT E.eID, E.name, P.parkID
+  2  FROM Employee E, ParkingSpace P
+  3  MINUS
+  4  SELECT DISTINCT E.eID, E.name, P.parkID
+  5  FROM Employee E, ParkingSpace P
+  6  WHERE E.eID != P.eID;
+
+       EID NAME                     PARKID                                      
+---------- -------------------- ----------                                      
+      1001 Mark Hamill                 250                                      
+
+1 row selected.
+
+SQL> 
+SQL> --Q8: Correlated subquery
+SQL> --Finds all the employees that have sold two or more tickets
+SQL> SELECT E.eID, E.name
+  2  FROM Employee E
+  3  WHERE   (SELECT COUNT(*)
+  4  	     FROM Sells S
+  5  	     WHERE S.eID = E.eID) >= 2;
+
+       EID NAME                                                                 
+---------- --------------------                                                 
+      1002 Luke Skywalker                                                       
+      1003 John Jingle                                                          
+
+2 rows selected.
+
+SQL> 
+SQL> --Q9: Outer Join Query
+SQL> --Finds the purchasing history of all tickets sold at the theater
+SQL> SELECT M.mID, M.title, T.tID, T.cName, T.cost
+  2  FROM Movie M LEFT OUTER JOIN Ticket T ON M.mID = T.mID;
+
+       MID TITLE                            TID CNAME                      COST 
+---------- ------------------------- ---------- -------------------- ---------- 
+         1 Alice In Wonderland              101 Rebecca                      15 
+         2 The Great Wolf                   102 Jill                         20 
+         1 Alice In Wonderland              103 John                         15 
+         1 Alice In Wonderland              104 Sam                          15 
+         2 The Great Wolf                   105 Rick                         20 
+         2 The Great Wolf                   106 Morty                        20 
+
+6 rows selected.
+
+SQL> 
+SQL> --Q10: Division query
+SQL> --Finds all the employees that have sold tickets to every movie
+SQL> SELECT E.eID, E.name
+  2  FROM Employee E
+  3  WHERE NOT EXISTS(SELECT M.mID
+  4  	     FROM Movie M
+  5  	     MINUS
+  6  	     SELECT DISTINCT T.mID
+  7  	     FROM Ticket T, Sells S
+  8  	     WHERE S.eID = E.eID AND T.tID = S.tID);
+
+       EID NAME                                                                 
+---------- --------------------                                                 
+      1002 Luke Skywalker                                                       
+      1003 John Jingle                                                          
+
+2 rows selected.
+
+SQL> 
+SQL> --Testing KEY1
+SQL> INSERT INTO Ticket VALUES (104, 3, 20, 20, 'Sheryl');
+INSERT INTO Ticket VALUES (104, 3, 20, 20, 'Sheryl')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (CHESEBMA.SYS_C00271204) violated 
+
+
+SQL> --Testing ATT1
+SQL> INSERT INTO Ticket VALUES (102, 2, 4, 45, 'Bob');
+INSERT INTO Ticket VALUES (102, 2, 4, 45, 'Bob')
+*
+ERROR at line 1:
+ORA-02290: check constraint (CHESEBMA.ATT1) violated 
+
+
+SQL> --Testing Primary Key
+SQL> INSERT INTO Theater VALUES (NULL, 60000000);
+INSERT INTO Theater VALUES (NULL, 60000000)
+                            *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("CHESEBMA"."THEATER"."THEATERID") 
+
+
+SQL> --Testing ATT3
+SQL> INSERT INTO Employee VALUES (1005, 20, 'Corey', NULL, 1, NULL);
+INSERT INTO Employee VALUES (1005, 20, 'Corey', NULL, 1, NULL)
+*
+ERROR at line 1:
+ORA-02290: check constraint (CHESEBMA.ATT3) violated 
+
+
+SQL> INSERT INTO Employee VALUES (1004, 30, 'Joanne', NULL, 0, NULL);
+INSERT INTO Employee VALUES (1004, 30, 'Joanne', NULL, 0, NULL)
+*
+ERROR at line 1:
+ORA-02290: check constraint (CHESEBMA.ATT3) violated 
+
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> SPOOL OFF
